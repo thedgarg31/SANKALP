@@ -1,1 +1,7 @@
+A custom cursor for a modern insurance website. The cursor should be a minimalist and clean design.
 
+Primary state (default): A sleek, slightly rounded pointer, subtly incorporating a shield icon within its shape or as a small, elegant emblem at its base. The color palette should be professional and trustworthy: deep blue (#3B82F6) and white.
+
+Pointer state (hovering over links): The same cursor, but it should have a soft, glowing blue outer aura or shadow to indicate interactivity. The shield emblem could gently pulse or scale up by 10%.
+
+The final image should be a high-resolution PNG with a transparent background, suitable for use as a .cur or .png CSS cursor.
