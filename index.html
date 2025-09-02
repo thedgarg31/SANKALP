@@ -1,1 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sankalp - Your Insurance Partner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        .sidebar-closed {
+            transform: translateX(-100%);
+        }
+        .backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Login Page -->
+    <div id="login-page" class="flex flex-col items-center justify-center min-h-screen bg-white">
+        <div class="w-full max-w-md p-8 space-y-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-blue-600">Sankalp</h1>
+                <p class="mt-2 text-gray-600">Your Trusted Insurance Partner</p>
+            </div>
+            <div class="bg-gray-100 p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-center text-gray-800">Welcome Back</h2>
+                <p class="text-sm text-center text-gray-500 mt-1">Please log in to your account.</p>
+                <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
+                    <div class="relative">
+                        <input id="email" name="email" type="email" autocomplete="email" required class="peer w-full px-4 py-3 text-gray-800 bg-white border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email address">
+                        <label for="email" class="absolute left-4 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-3.5 peer-focus:text-blue-600 peer-focus:text-sm">Email address</label>
+                    </div>
+                    <div class="relative">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required class="peer w-full px-4 py-3 text-gray-800 bg-white border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Password">
+                        <label for="password" class="absolute left-4 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-3.5 peer-focus:text-blue-600 peer-focus:text-sm">Password</label>
+                    </div>
+                    <div>
+                        <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            Sign in
+                        </button>
+                    </div>
+                </form>
+                 <p id="login-error" class="text-center text-red-500 text-sm mt-4 hidden">Invalid credentials. Please try again.</p>
+            </div>
+            <p class="text-xs text-center text-gray-400">By continuing, you agree to Sankalp's Terms of Service and Privacy Policy.</p>
+        </div>
+    </div>
+
+    <!-- Main Application / Dashboard -->
+    <div id="app-dashboard" class="hidden">
+        
+        <!-- Sidebar Navigation -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden backdrop"></div>
+        <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 sidebar sidebar-closed">
+            <div class="p-4 border-b">
+                <h2 class="text-2xl font-bold text-blue-600">Sankalp</h2>
+            </div>
+            <nav class="p-4">
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="ph-bold ph-map-pin text-xl text-blue-500"></i>
+                    <span class="ml-4 font-medium text-gray-700">Nearby Offices</span>
+                </a>
+                <a href="#" class="flex items-center p-3 mt-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="ph-bold ph-info text-xl text-blue-500"></i>
+                    <span class="ml-4 font-medium text-gray-700">About Us</span>
+                </a>
+                <a href="#" class="flex items-center p-3 mt-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="ph-bold ph-phone-call text-xl text-blue-500"></i>
+                    <span class="ml-4 font-medium text-gray-700">Support</span>
+                </a>
+            </nav>
+            <div class="absolute bottom-0 w-full p-4 border-t">
+                 <button onclick="handleLogout()" class="w-full flex items-center justify-center p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors">
+                    <i class="ph-bold ph-sign-out text-xl text-red-500"></i>
+                    <span class="ml-3 font-medium text-red-700">Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="min-h-screen bg-gray-50">
+            <!-- Header -->
+            <header class="sticky top-0 bg-white/80 backdrop-blur-md shadow-sm z-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center">
+                            <button id="menu-button" class="p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                                <i class="ph-bold ph-list text-2xl"></i>
+                            </button>
+                            <span class="ml-4 text-xl font-semibold text-gray-800">Dashboard</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <button class="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100">
+                                    <span class="font-medium text-sm text-gray-700 hidden sm:block">ID: 12345678</span>
+                                    <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                        S
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <!-- Your Policies Section -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Your Active Policies</h2>
+                        <div class="mt-6 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                            <!-- Policy Card 1 -->
+                            <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="p-2 bg-green-100 rounded-full"><i class="ph-bold ph-first-aid-kit text-2xl text-green-600"></i></div>
+                                            <h3 class="ml-4 text-lg font-semibold text-gray-800">Health Insurance</h3>
+                                        </div>
+                                        <span class="px-3 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Active</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">Policy #HLT-987654</p>
+                                    <div class="mt-4">
+                                        <p class="text-3xl font-bold text-gray-900">₹5 Lakhs</p>
+                                        <p class="text-sm text-gray-500">Coverage Amount</p>
+                                    </div>
+                                    <div class="mt-4 text-sm text-gray-600">
+                                        <p>Premium: ₹12,500 / year</p>
+                                        <p>Next Due: 15 Oct 2024</p>
+                                    </div>
+                                </div>
+                                <div class="px-6 py-4 bg-gray-50 border-t">
+                                    <a href="#" class="font-medium text-blue-600 hover:text-blue-800">View Details &rarr;</a>
+                                </div>
+                            </div>
+                            <!-- Policy Card 2 -->
+                            <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="p-2 bg-blue-100 rounded-full"><i class="ph-bold ph-car text-2xl text-blue-600"></i></div>
+                                            <h3 class="ml-4 text-lg font-semibold text-gray-800">Car Insurance</h3>
+                                        </div>
+                                        <span class="px-3 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Active</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">Policy #CAR-123456</p>
+                                    <div class="mt-4">
+                                        <p class="text-3xl font-bold text-gray-900">₹8 Lakhs</p>
+                                        <p class="text-sm text-gray-500">IDV (Insured Declared Value)</p>
+                                    </div>
+                                    <div class="mt-4 text-sm text-gray-600">
+                                        <p>Premium: ₹18,000 / year</p>
+                                        <p>Next Due: 22 Dec 2024</p>
+                                    </div>
+                                </div>
+                                <div class="px-6 py-4 bg-gray-50 border-t">
+                                    <a href="#" class="font-medium text-blue-600 hover:text-blue-800">View Details &rarr;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Explore More Insurance Section -->
+                    <div class="mt-16">
+                        <h2 class="text-2xl font-bold text-gray-900">Explore Our Products</h2>
+                        <div class="mt-6 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                            <!-- Product Card -->
+                            <div class="group relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform">
+                                <div class="p-4 bg-red-100 rounded-full"><i class="ph-bold ph-heartbeat text-4xl text-red-600"></i></div>
+                                <h3 class="mt-4 text-lg font-semibold text-gray-800">Life Insurance</h3>
+                                <p class="mt-1 text-sm text-gray-500">Secure your family's future. Plans from LIC, HDFC Life, and more.</p>
+                                <a href="#" class="mt-4 font-medium text-blue-600 stretched-link">Learn More</a>
+                            </div>
+                             <!-- Product Card -->
+                            <div class="group relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform">
+                                <div class="p-4 bg-yellow-100 rounded-full"><i class="ph-bold ph-house text-4xl text-yellow-600"></i></div>
+                                <h3 class="mt-4 text-lg font-semibold text-gray-800">Home Insurance</h3>
+                                <p class="mt-1 text-sm text-gray-500">Protect your home from damage and theft. Trusted by millions.</p>
+                                <a href="#" class="mt-4 font-medium text-blue-600 stretched-link">Learn More</a>
+                            </div>
+                             <!-- Product Card -->
+                            <div class="group relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform">
+                                <div class="p-4 bg-purple-100 rounded-full"><i class="ph-bold ph-airplane-takeoff text-4xl text-purple-600"></i></div>
+                                <h3 class="mt-4 text-lg font-semibold text-gray-800">Travel Insurance</h3>
+                                <p class="mt-1 text-sm text-gray-500">Travel worry-free with coverage for trips, luggage, and medical emergencies.</p>
+                                <a href="#" class="mt-4 font-medium text-blue-600 stretched-link">Learn More</a>
+                            </div>
+                             <!-- Product Card -->
+                            <div class="group relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform">
+                                <div class="p-4 bg-teal-100 rounded-full"><i class="ph-bold ph-briefcase text-4xl text-teal-600"></i></div>
+                                <h3 class="mt-4 text-lg font-semibold text-gray-800">Business Insurance</h3>
+                                <p class="mt-1 text-sm text-gray-500">Comprehensive plans to protect your business assets and liabilities.</p>
+                                <a href="#" class="mt-4 font-medium text-blue-600 stretched-link">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ads and Offers -->
+                    <div class="mt-16">
+                         <h2 class="text-2xl font-bold text-gray-900">Offers For You</h2>
+                         <div class="mt-6 bg-blue-600 rounded-2xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between">
+                            <div>
+                                <h3 class="text-3xl font-bold">Get 20% Off on Your Next Policy</h3>
+                                <p class="mt-2 text-blue-200 max-w-xl">Renew or buy a new policy this month and avail a special discount. T&C Apply.</p>
+                            </div>
+                            <a href="#" class="mt-6 md:mt-0 md:ml-6 flex-shrink-0 px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-md hover:bg-gray-100 transition-colors">Claim Offer</a>
+                         </div>
+                    </div>
+
+                    <!-- Contact Executive -->
+                    <div class="mt-16 text-center bg-white p-10 rounded-2xl shadow-lg">
+                        <h2 class="text-2xl font-bold text-gray-900">Need Help?</h2>
+                        <p class="mt-2 text-gray-600">Our executives are here to assist you with your insurance needs.</p>
+                        <div class="mt-6">
+                            <a href="mailto:support@sankalp.com" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-900">
+                                <i class="ph-bold ph-envelope-simple mr-2"></i>
+                                Contact Our Executive
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('app-dashboard');
+        const sidebar = document.getElementById('sidebar');
+        const menuButton = document.getElementById('menu-button');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        const loginError = document.getElementById('login-error');
+
+        function handleLogin(event) {
+            event.preventDefault();
+            // In a real app, you'd send credentials to a backend server.
+            // For this demo, we'll just simulate a successful login.
+            const email = document.getElementById('email').value;
+            if(email) { // Basic check
+                loginPage.classList.add('hidden');
+                dashboardPage.classList.remove('hidden');
+            } else {
+               loginError.classList.remove('hidden');
+               setTimeout(() => loginError.classList.add('hidden'), 3000);
+            }
+        }
+        
+        function handleLogout() {
+            dashboardPage.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+            // Close sidebar if it's open
+            sidebar.classList.add('sidebar-closed');
+            sidebar.classList.remove('sidebar-open');
+            sidebarBackdrop.classList.add('hidden');
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-open');
+            sidebar.classList.toggle('sidebar-closed');
+            sidebarBackdrop.classList.toggle('hidden');
+        }
+
+        menuButton.addEventListener('click', toggleSidebar);
+        sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+    </script>
+</body>
+</html>
 
