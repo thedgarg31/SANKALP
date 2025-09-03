@@ -1,0 +1,34 @@
+{
+  "name": "sankalp-insurance-management",
+  "version": "2.0.0",
+  "description": "A comprehensive insurance management system with enhanced features",
+  "main": "simple_server.js",
+  "scripts": {
+    "start": "node simple_server.js",
+    "dev": "node simple_server.js",
+    "enhanced": "node enhanced_server.js",
+    "test": "echo \"No tests specified\" && exit 0",
+    "setup": "node setup.js"
+  },
+  "keywords": [
+    "insurance",
+    "management",
+    "nodejs",
+    "express",
+    "mysql",
+    "jwt",
+    "authentication"
+  ],
+  "author": "Sankalp Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

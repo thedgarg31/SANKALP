@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sankalp - Enhanced Insurance Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Login/Register Page -->
+    <div id="auth-page" class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-2xl">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-bold ph-shield-check text-3xl text-white"></i>
+                </div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Sankalp</h1>
+                <p class="mt-2 text-gray-600">Enhanced Insurance Management</p>
+            </div>
+            
+            <!-- Auth Tabs -->
+            <div class="flex bg-gray-100 rounded-lg p-1">
+                <button id="login-tab" class="flex-1 py-2 px-4 rounded-md bg-blue-600 text-white font-medium transition-all">Login</button>
+                <button id="register-tab" class="flex-1 py-2 px-4 rounded-md text-gray-600 font-medium hover:text-gray-800 transition-all">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-6">
+                <div class="relative">
+                    <input id="login-email" type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Email">
+                </div>
+                <div class="relative">
+                    <input id="login-password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Password">
+                </div>
+                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all font-medium">Sign In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="space-y-6 hidden">
+                <div class="relative">
+                    <input id="reg-fullname" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Full Name">
+                </div>
+                <div class="relative">
+                    <input id="reg-email" type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Email">
+                </div>
+                <div class="relative">
+                    <input id="reg-password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Password">
+                </div>
+                <div class="relative">
+                    <input id="reg-phone" type="tel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Phone Number">
+                </div>
+                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 transition-all font-medium">Create Account</button>
+            </form>
+
+            <div id="auth-message" class="text-center text-sm hidden"></div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-lg border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                            <i class="ph-bold ph-shield-check text-xl text-white"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Sankalp Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 text-gray-600 hover:text-gray-800 relative">
+                                <i class="ph-bold ph-bell text-xl"></i>
+                                <span id="notification-badge" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">3</span>
+                            </button>
+                        </div>
+                        <span id="user-name" class="text-gray-700 font-medium"></span>
+                        <button onclick="logout()" class="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:from-red-700 hover:to-pink-700 transition-all">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button onclick="showSection('overview')" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium">Overview</button>
+                    <button onclick="showSection('policies')" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">My Policies</button>
+                    <button onclick="showSection('claims')" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">Claims</button>
+                    <button onclick="showSection('products')" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">Buy Insurance</button>
+                    <button onclick="showSection('support')" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">Support</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Sections -->
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            
+            <!-- Overview Section -->
+            <div id="overview-section" class="space-y-6">
+                <h2 class="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
+                
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100">Active Policies</p>
+                                <p id="active-policies-count" class="text-3xl font-bold">0</p>
+                            </div>
+                            <i class="ph-bold ph-shield-check text-4xl text-blue-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100">Total Coverage</p>
+                                <p id="total-coverage" class="text-3xl font-bold">₹0</p>
+                            </div>
+                            <i class="ph-bold ph-currency-dollar text-4xl text-green-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6 rounded-xl text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-yellow-100">Pending Claims</p>
+                                <p id="pending-claims-count" class="text-3xl font-bold">0</p>
+                            </div>
+                            <i class="ph-bold ph-warning text-4xl text-yellow-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100">Next Premium</p>
+                                <p id="next-premium" class="text-3xl font-bold">₹0</p>
+                            </div>
+                            <i class="ph-bold ph-calendar text-4xl text-purple-200"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Policy Distribution</h3>
+                        <canvas id="policyChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Premium Trends</h3>
+                        <canvas id="premiumChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activities</h3>
+                    <div id="recent-activities" class="space-y-3">
+                        <!-- Activities will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Policies Section -->
+            <div id="policies-section" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">My Insurance Policies</h2>
+                    <button onclick="showPurchaseForm()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all">Buy New Policy</button>
+                </div>
+                <div id="policies-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Policies will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Claims Section -->
+            <div id="claims-section" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">File a Claim</h2>
+                    <button onclick="showClaimForm()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all">New Claim</button>
+                </div>
+                
+                <!-- Claim Form -->
+                <div id="claim-form" class="hidden bg-white p-6 rounded-xl shadow-lg">
+                    <form class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Policy</label>
+                                <select id="claim-policy" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"></select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Claim Type</label>
+                                <select id="claim-type" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="Health">Health</option>
+                                    <option value="Accident">Accident</option>
+                                    <option value="Property">Property</option>
+                                    <option value="Vehicle">Vehicle</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea id="claim-description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Claim Amount</label>
+                                <input id="claim-amount" type="number" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Incident Date</label>
+                                <input id="incident-date" type="date" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="hideClaimForm()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-all">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all">Submit Claim</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="claims-list" class="space-y-4">
+                    <!-- Claims will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="products-section" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-gray-900">Available Insurance Products</h2>
+                <div id="products-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div id="support-section" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-gray-900">Support & Help</h2>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Subject</label>
+                            <input id="support-subject" type="text" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea id="support-description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Priority</label>
+                            <select id="support-priority" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all">Submit Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let authToken = null;
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Auth tab switching
+        document.getElementById('login-tab').addEventListener('click', () => switchTab('login'));
+        document.getElementById('register-tab').addEventListener('click', () => switchTab('register'));
+
+        function switchTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                document.getElementById('login-tab').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('register-tab').classList.remove('bg-blue-600', 'text-white');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+                document.getElementById('register-tab').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('login-tab').classList.remove('bg-blue-600', 'text-white');
+            }
+        }
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    showDashboard();
+                    loadUserData();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Login failed. Please try again.', 'error');
+            }
+        });
+
+        // Register form
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
+                full_name: document.getElementById('reg-fullname').value,
+                phone_number: document.getElementById('reg-phone').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    showMessage('Registration successful!', 'success');
+                    switchTab('login');
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Registration failed. Please try again.', 'error');
+            }
+        });
+
+        // Dashboard functions
+        function showDashboard() {
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('user-name').textContent = currentUser.full_name;
+        }
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('auth-page').classList.remove('hidden');
+        }
+
+        function showSection(section) {
+            // Hide all sections
+            ['overview', 'policies', 'claims', 'products', 'support'].forEach(s => {
+                document.getElementById(`${s}-section`).classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(`${section}-section`).classList.remove('hidden');
+            
+            // Load section data
+            if (section === 'overview') loadOverview();
+            if (section === 'policies') loadPolicies();
+            if (section === 'claims') loadClaims();
+            if (section === 'products') loadProducts();
+        }
+
+        async function loadUserData() {
+            await Promise.all([
+                loadOverview(),
+                loadPolicies(),
+                loadClaims(),
+                loadProducts()
+            ]);
+        }
+
+        async function loadOverview() {
+            try {
+                // Load policies for statistics
+                const policiesResponse = await fetch(`${API_BASE}/policies`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const policies = await policiesResponse.json();
+                
+                // Load claims for statistics
+                const claimsResponse = await fetch(`${API_BASE}/claims`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const claims = await claimsResponse.json();
+                
+                // Update statistics
+                document.getElementById('active-policies-count').textContent = policies.filter(p => p.status === 'Active').length;
+                document.getElementById('total-coverage').textContent = '₹' + policies.reduce((sum, p) => sum + parseFloat(p.coverage_amount || 0), 0).toLocaleString();
+                document.getElementById('pending-claims-count').textContent = claims.filter(c => c.status === 'Pending').length;
+                
+                // Calculate next premium
+                const nextPremium = policies.reduce((sum, p) => sum + parseFloat(p.premium_amount || 0), 0);
+                document.getElementById('next-premium').textContent = '₹' + nextPremium.toLocaleString();
+                
+                // Create charts
+                createPolicyChart(policies);
+                createPremiumChart(policies);
+                
+                // Load recent activities
+                loadRecentActivities(policies, claims);
+                
+            } catch (error) {
+                console.error('Failed to load overview:', error);
+            }
+        }
+
+        function createPolicyChart(policies) {
+            const ctx = document.getElementById('policyChart').getContext('2d');
+            const statusCounts = {};
+            
+            policies.forEach(policy => {
+                statusCounts[policy.status] = (statusCounts[policy.status] || 0) + 1;
+            });
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusCounts),
+                    datasets: [{
+                        data: Object.values(statusCounts),
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#6B7280']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createPremiumChart(policies) {
+            const ctx = document.getElementById('premiumChart').getContext('2d');
+            const labels = policies.map(p => p.policy_name.substring(0, 10) + '...');
+            const data = policies.map(p => p.premium_amount);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Annual Premium',
+                        data: data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadRecentActivities(policies, claims) {
+            const activities = [];
+            
+            // Add policy activities
+            policies.forEach(policy => {
+                activities.push({
+                    type: 'policy',
+                    message: `Policy ${policy.policy_name} is ${policy.status}`,
+                    date: new Date(policy.purchased_at).toLocaleDateString(),
+                    icon: 'ph-shield-check',
+                    color: 'text-blue-600'
+                });
+            });
+            
+            // Add claim activities
+            claims.forEach(claim => {
+                activities.push({
+                    type: 'claim',
+                    message: `Claim ${claim.claim_number} is ${claim.status}`,
+                    date: new Date(claim.filing_date).toLocaleDateString(),
+                    icon: 'ph-warning',
+                    color: 'text-yellow-600'
+                });
+            });
+            
+            // Sort by date and take recent 5
+            activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const recentActivities = activities.slice(0, 5);
+            
+            const activitiesContainer = document.getElementById('recent-activities');
+            activitiesContainer.innerHTML = recentActivities.map(activity => `
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <i class="ph-bold ${activity.icon} text-xl ${activity.color}"></i>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">${activity.message}</p>
+                        <p class="text-xs text-gray-500">${activity.date}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadPolicies() {
+            try {
+                const response = await fetch(`${API_BASE}/policies`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const policies = await response.json();
+                
+                const policiesList = document.getElementById('policies-list');
+                policiesList.innerHTML = policies.map(policy => `
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">${policy.policy_name}</h3>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${
+                                policy.status === 'Active' ? 'bg-green-100 text-green-800' :
+                                policy.status === 'Expired' ? 'bg-red-100 text-red-800' :
+                                'bg-yellow-100 text-yellow-800'
+                            }">${policy.status}</span>
+                        </div>
+                        <p class="text-gray-600 mb-2">${policy.provider_name}</p>
+                        <p class="text-3xl font-bold text-gray-900">₹${parseFloat(policy.coverage_amount).toLocaleString()}</p>
+                        <p class="text-sm text-gray-500">Coverage Amount</p>
+                        <div class="mt-4 text-sm text-gray-600 space-y-1">
+                            <p>Premium: ₹${parseFloat(policy.premium_amount).toLocaleString()}/year</p>
+                            <p>Policy #: ${policy.policy_number}</p>
+                            <p>Start: ${new Date(policy.start_date).toLocaleDateString()}</p>
+                            <p>End: ${new Date(policy.end_date).toLocaleDateString()}</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <button onclick="viewPolicyDetails(${policy.id})" class="text-blue-600 hover:text-blue-800 font-medium">View Details →</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load policies:', error);
+            }
+        }
+
+        async function loadClaims() {
+            try {
+                const response = await fetch(`${API_BASE}/claims`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const claims = await response.json();
+                
+                const claimsList = document.getElementById('claims-list');
+                claimsList.innerHTML = claims.map(claim => `
+                    <div class="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">${claim.claim_number}</h4>
+                                <p class="text-sm text-gray-600 mt-1">${claim.description}</p>
+                                <div class="mt-2 space-y-1">
+                                    <p class="text-sm text-gray-500">Amount: ₹${parseFloat(claim.claim_amount).toLocaleString()}</p>
+                                    <p class="text-sm text-gray-500">Filed: ${new Date(claim.filing_date).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${
+                                claim.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                claim.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                                claim.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                                'bg-blue-100 text-blue-800'
+                            }">${claim.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load claims:', error);
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const products = await response.json();
+                
+                const productsList = document.getElementById('products-list');
+                productsList.innerHTML = products.map(product => `
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="ph-bold ${product.icon} text-3xl text-blue-600"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">${product.type_name}</h3>
+                            <p class="text-sm text-gray-600 mb-4">${product.description}</p>
+                            <button onclick="buyPolicy(${product.id})" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium">Learn More</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load products:', error);
+            }
+        }
+
+        function showClaimForm() {
+            document.getElementById('claim-form').classList.remove('hidden');
+        }
+
+        function hideClaimForm() {
+            document.getElementById('claim-form').classList.add('hidden');
+        }
+
+        function showPurchaseForm() {
+            // This would show a policy purchase form
+            alert('Policy purchase form would appear here');
+        }
+
+        function viewPolicyDetails(policyId) {
+            // This would show detailed policy information
+            alert(`Viewing details for policy ${policyId}`);
+        }
+
+        function buyPolicy(productId) {
+            // This would navigate to policy purchase
+            alert(`Buying policy for product ${productId}`);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('auth-message');
+            messageDiv.textContent = message;
+            messageDiv.className = `text-center text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+            messageDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is already logged in
+            const savedToken = localStorage.getItem('authToken');
+            if (savedToken) {
+                authToken = savedToken;
+                // Verify token and load dashboard
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
